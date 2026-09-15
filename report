@@ -1,0 +1,39 @@
+Sales Tracker
+
+1. Objective
+The objective of this task was to practice structuring a spreadsheet for ongoing data entry and automatic aggregation. The goal was to build a lightweight sales tracker that could auto-calculate daily, weekly, and monthly totals directly from raw sales entries, without requiring any manual recalculation.
+2. Task Description 
+Build a lightweight sales tracker spreadsheet that auto-calculates daily, weekly, and monthly totals from raw entries. The tracker needed to include a working template with formulas, sample data entered with totals verified against a manual check, and data validation to prevent incorrect entries.
+3. Approach & Methodology
+The workbook was structured to separate raw data entry from computed output, following the hint to keep the raw entry tab distinct from the summary tab. This ensures that formulas driving the summaries are never at risk of being overwritten during routine data entry.
+A single Raw Data sheet holds every transaction, with the Amount column calculated automatically rather than entered manually.
+Three dedicated summary sheets (Daily, Weekly, Monthly) use SUMIFS and COUNTIFS to roll up totals from Raw Data on demand.
+A Dashboard sheet presents overall totals at a glance for quick review.
+A Lists sheet powers dropdown-based data validation on the entry sheet, reducing typos in Product, Category, and Salesperson fields.
+4. Spreadsheet Structure
+Sheet	Purpose
+Raw Data	Single entry point for all sales transactions (Date, Product, Category, Quantity, Unit Price, Amount, Salesperson).
+Daily Summary	Per-day transaction count, quantity, total sales, and average sale via SUMIFS/COUNTIFS.
+Weekly Summary	Monday-Sunday rollups using date-range SUMIFS.
+Monthly Summary	Month-wise totals using SUMIFS with EDATE for month boundaries.
+Dashboard	Overall totals: transactions, quantity, sales, and average sale.
+Lists	Dropdown source lists for data validation on Raw Data.
+5. Key Formulas Used
+Purpose	Formula Logic
+Auto-calculate Amount	=IF(OR(A2="",D2="",E2=""),"",D2*E2)
+Daily total sales	=SUMIFS('Raw Data'!F:F,'Raw Data'!A:A,A5)
+Weekly total sales	=SUMIFS('Raw Data'!F:F,'Raw Data'!A:A,">="&A5,'Raw Data'!A:A,"<="&B5)
+Monthly total sales	=SUMIFS('Raw Data'!F:F,'Raw Data'!A:A,">="&A5,'Raw Data'!A:A,"<"&EDATE(A5,1))
+Average sale	=IFERROR(D5/B5,0)
+6. Data Validation
+Dropdown lists sourced from the Lists sheet were applied to the Product, Category, and Salesperson columns on Raw Data. This constrains entries to a fixed, known set of values, which keeps the SUMIFS/COUNTIFS matching reliable and prevents inconsistent spellings from splitting totals across near-duplicate categories.
+
+7. Verification
+To confirm the formulas were working correctly, sample transactions for a few individual days and one full week were summed manually and cross-checked against the values produced by the Daily and Weekly Summary sheets. The manual totals matched the automated SUMIFS output before the approach was scaled to the full sample dataset.
+8. Interview Questions
+Q1. How would you design a spreadsheet so non-technical staff can enter data safely?
+Keep one dedicated entry sheet with dropdown-validated columns (via Data Validation, sourced from a Lists sheet) so staff pick from fixed options instead of free-typing. Lock or separate all formula-driven sheets from the entry sheet so a typo or accidental drag can't overwrite a calculation.
+Q2. What's the risk of mixing raw data with formulas on the same tab?
+Formulas can get overwritten, shifted, or deleted the moment someone enters a new row in the wrong place, breaking totals silently since the error may not always throw a visible warning. Keeping raw entries and calculations on separate tabs lets new data flow in safely while the summary logic stays untouched.
+9. Conclusion
+This task provided hands-on practice in structuring a spreadsheet for scalable, ongoing data entry. By separating raw data from computed summaries and using SUMIFS-based aggregation with data validation, the tracker stays accurate as new sales entries are added, with totals verified against manual calculations.
